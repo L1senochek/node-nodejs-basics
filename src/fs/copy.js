@@ -11,21 +11,23 @@ const copyFolderPath = path.join(__dirname, 'files_copy');
 const errorMessage = 'FS operation failed';
 
 const copy = async () => {
-  await fs.mkdir(copyFolderPath);
-  const files = await fs.readdir(initialFolderPath);
-  console.log(files);
+  try {
+    await fs.mkdir(copyFolderPath);
+    const files = await fs.readdir(initialFolderPath);
 
-  for (const file of files) {
-    const initialFilePath = path.join(initialFolderPath, file);
-    const copyFilePath = path.join(copyFolderPath, file);
+    for (const file of files) {
+      const initialFilePath = path.join(initialFolderPath, file);
+      const copyFilePath = path.join(copyFolderPath, file);
+      const stats = await fs.stat(initialFilePath);
 
-    const stats = await fs.stat(initialFilePath);
-
-    if (stats.isDirectory()) {
-      await copy(initialFilePath, copyFilePath);
-    } else {
-      await fs.copyFile(initialFilePath, copyFilePath);
+      if (stats.isDirectory()) {
+        await copy(initialFilePath, copyFilePath);
+      } else {
+        await fs.copyFile(initialFilePath, copyFilePath);
+      }
     }
+  } catch {
+    throw new Error(errorMessage);
   }
 };
 
