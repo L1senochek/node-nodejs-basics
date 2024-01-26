@@ -14,6 +14,7 @@ const compress = async () => {
   const gzipStream = zlib.createGzip();
 
   readStream.pipe(gzipStream).pipe(writeStream);
+
   writeStream.on('error', (error) => console.error(error.message));
 };
 
